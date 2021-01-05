@@ -22,20 +22,20 @@ public class ${content.controller.className} {
 	
 	@ApiOperation("获取全部信息")
 	@GetMapping(value = "/list")
-	public HttpJsonResult<List<${content.entity.className}>> getList(${content.entity.className} ${content.entity.className?uncap_first}) {
+	public HttpJsonResult<List<${content.entity.className}>> getList(${content.entity.className} ${content.entity.className?uncap_first}){
 		 return HttpJsonResult.ok(${content.service.className?uncap_first}.getList(${content.entity.className?uncap_first}));
 	}
 
 	<#if content.entity.primaryKeyAttr??>
 	@ApiOperation("根据id获取${content.entity.className?uncap_first}信息")
 	@GetMapping(value = "/getById")
-	public HttpJsonResult<${content.entity.className}> getById(Integer id) {
+	public HttpJsonResult<${content.entity.className}> getById(Integer id){
 		return HttpJsonResult.ok(${content.service.className?uncap_first}.get${content.entity.className}ById(id));
 	}
 
 	@ApiOperation("新增或者修改")
 	@PostMapping(value = "/saveOrUpdate")
-	public HttpJsonResult<String> saveOrUpdate(${content.entity.className} ${content.entity.className?uncap_first}) {
+	public HttpJsonResult<String> saveOrUpdate(${content.entity.className} ${content.entity.className?uncap_first}){
 		if(${content.entity.className?uncap_first}.getId()!=null){
 			try {
 				${content.service.className?uncap_first}.${content.service.item.updateNotNull.value!}(${content.entity.className?uncap_first});
@@ -55,7 +55,7 @@ public class ${content.controller.className} {
 
 	@ApiOperation("删除")
 	@GetMapping(value = "/deleteById")
-	public HttpJsonResult<String> deleteById(Integer id) {
+	public HttpJsonResult<String> deleteById(Integer id){
 		try {
 			${content.service.className?uncap_first}.${content.service.item.deleteById.value!}(id);
 		} catch (Exception e) {
