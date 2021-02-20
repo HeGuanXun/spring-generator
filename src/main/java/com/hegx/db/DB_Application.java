@@ -118,22 +118,17 @@ public class DB_Application {
     @Data
     static class DbColumn {
         //字段名字
-        private String columnName = "";
+        private String columnName;
         //字段类型
         private String columnType = "VARCHAR";
         //字段说明
-        private String columnContext = "";
+        private String columnContext;
 
         public DbColumn(String columnName, String columnType, String columnContext) {
             this.columnName = columnName;
             if (columnType != null) {
                 this.columnType = columnType;
             }
-            this.columnContext = columnContext;
-        }
-
-        public DbColumn(String columnName, String columnContext) {
-            this.columnName = columnName;
             this.columnContext = columnContext;
         }
     }
