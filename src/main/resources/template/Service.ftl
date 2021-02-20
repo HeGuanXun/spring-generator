@@ -6,7 +6,7 @@ import ${content.entity.classPackage}.${content.entity.className};
  * ${content.entity.className}的服务接口
  * @author
  */
-public interface ${content.service.className} {
+public interface ${content.service.className}{
 	/**
 	 * 获得所以数据集
 	 */

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
 import ${content.service.classPackage}.${content.service.className};
 import ${content.entity.classPackage}.${content.entity.className};
-import com.hgx.electricity.utils.HttpJsonResult;
+import com.hgx.common.utils.HttpJsonResult;
 import java.util.List;
 
 /**
@@ -15,7 +15,7 @@ import java.util.List;
 @Api(value = "${content.table.tableComment}",tags = "${content.table.tableComment}")
 @RequestMapping(value = "/${content.entity.className?uncap_first}")
 @RestController
-public class ${content.controller.className} {
+public class ${content.controller.className}{
 
 	@Autowired
 	private ${content.service.className} ${content.service.className?uncap_first};

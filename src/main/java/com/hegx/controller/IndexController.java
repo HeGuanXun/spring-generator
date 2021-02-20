@@ -178,7 +178,7 @@ public class IndexController extends BaseController {
 	/** Assist类名 */
 	@FXML
 	private Label lblAssistName;
-	/** Mapper的名字 */
+	/** x的名字 */
 	@FXML
 	private Label lblMapperName;
 	/** 单元测试的类名 */
@@ -1171,7 +1171,7 @@ public class IndexController extends BaseController {
 							if (templateName.equals(Constant.TEMPLATE_NAME_MAPPER)) {
 								templateName = selectedDatabaseConfig.getDbType() + Constant.TEMPLATE_NAME_MAPPER_SUFFIX;
 							}
-							String path = "D:\\App\\A-project\\git-resource\\electricity-server\\src\\main\\resources\\mybatis";
+							String path = "D:\\App\\A-project\\git-resource\\oa-server\\src\\main\\resources\\mybatis";
 							CreateFileUtil.createFile(content, templateName, path, txtMapperPackage.getText(), txtMapperName.getText(), codeFormat,
 									config.isOverrideFile());
 						}

@@ -29,7 +29,7 @@ import javafx.stage.Stage;
  * 
  */
 public class SpringGeneratorApplication extends Application {
-	private static Logger LOG = Logger.getLogger(SpringGeneratorApplication.class.getName());
+	private static final Logger LOG = Logger.getLogger(SpringGeneratorApplication.class.getName());
 	/** 国际化控件的文字 */
 	public static Map<String, StringProperty> LANGUAGE = new HashMap<>();
 

@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
  * ${content.entity.className}的Dao接口
  * @author
  */
-public interface ${content.dao.className} {
+public interface ${content.dao.className}{
 
 	/**
 	 * 获得数据的总行数
