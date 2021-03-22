@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import lombok.extern.java.Log;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -28,6 +29,7 @@ import javafx.stage.Stage;
  * 程序的入口
  * 
  */
+@Log
 public class SpringGeneratorApplication extends Application {
 	private static final Logger LOG = Logger.getLogger(SpringGeneratorApplication.class.getName());
 	/** 国际化控件的文字 */

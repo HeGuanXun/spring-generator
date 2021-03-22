@@ -11,7 +11,7 @@ public class DBUtils {
 
     public static Connection getConnection() throws Exception {
         // 2.获得数据库链接
-        String URL = "jdbc:mysql://localhost:3306/oa?useSSL=false&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&serverTimezone=Asia/Shanghai";
+        String URL = "jdbc:mysql://localhost:3306/expressage?useSSL=false&useUnicode=true&characterEncoding=utf-8&autoReconnect=true&serverTimezone=Asia/Shanghai";
         String USER = "root";
         String PASSWORD = "123456";
         return DriverManager.getConnection(URL, USER, PASSWORD);

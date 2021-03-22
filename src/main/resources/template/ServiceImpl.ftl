@@ -22,7 +22,13 @@ public class ${content.serviceImpl.className} implements ${content.service.class
 
 	@Override
 	public List<${content.entity.className}> getList(${content.entity.className} ${content.entity.className?uncap_first}){
-		return ${content.dao.className?uncap_first}.${content.dao.item.select.value!}(null);
+		Assist assist = new Assist();
+	    <#list content.entity.attrs as item>
+		if (${content.entity.className?uncap_first}.get${item.field?cap_first}()!=null){
+			assist.setRequires(Assist.whereRequire("${item.field}",${content.entity.className?uncap_first}.get${item.field?cap_first}()));
+		 }
+		</#list>
+		return ${content.dao.className?uncap_first}.${content.dao.item.select.value!}(assist);
 	}
 	<#if content.entity.primaryKeyAttr??>
 	@Override

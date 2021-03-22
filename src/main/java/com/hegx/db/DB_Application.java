@@ -1,6 +1,7 @@
 package com.hegx.db;
 
 import com.hegx.annotation.Column;
+import com.hegx.annotation.Serve;
 import com.hegx.annotation.Table;
 import com.hegx.db.table.*;
 import com.hegx.db.utils.DBUtils;
@@ -8,21 +9,21 @@ import lombok.Data;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 创表程序
  */
+@Serve(value = "expressage-serve")
 public class DB_Application {
 
     public static void main(String[] args) throws Exception {
         //1.创建对象
-        UseCar commonObject = new UseCar();
-        //2.获取对象数据
-        List datas = commonObject.getDatas();
+        Apply commonObject = new Apply();
+        //2.构造数据
+        ArrayList<Apply> datas = commonObject.buildDatas();
         //3.构建字段
         initColumns(commonObject);
-        //4.创建
+        //4.创建表名
         createTableContext();
         //5.插入数据
         addData(datas);
@@ -39,7 +40,7 @@ public class DB_Application {
     //INSERT DDL
     private static String insertContext = "INSERT INTO`";
 
-    private static <T> void addData(List<T> datas) throws Exception {
+    private static <T> void addData(ArrayList<T> datas) throws Exception {
         System.out.println();
         for (int i = 0; i < datas.size(); i++) {
             insertContext = "insert into " + tableName + "(";
@@ -98,8 +99,8 @@ public class DB_Application {
                 case "java.lang.Integer":
                     columnType = "int(11) DEFAULT NULL";
                     break;
-                case "java.lang.Double":
-                    columnType = "decimal(10,0) DEFAULT NULL";
+                case "java.math.BigDecimal":
+                columnType = "decimal(10,0) DEFAULT NULL";
                     break;
                 case "java.util.Date":
                     columnType = "datetime DEFAULT CURRENT_TIMESTAMP";
@@ -131,6 +132,11 @@ public class DB_Application {
             }
             this.columnContext = columnContext;
         }
+    }
+
+    public static String getServeName(){
+        Serve serve = DB_Application.class.getAnnotation(Serve.class);
+        return serve.value();
     }
 
 }

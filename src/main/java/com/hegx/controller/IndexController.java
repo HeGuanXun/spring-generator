@@ -12,6 +12,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import com.hegx.SpringGeneratorApplication;
+import com.hegx.db.DB_Application;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.log4j.Logger;
@@ -1060,7 +1061,8 @@ public class IndexController extends BaseController {
 				protected Void call() throws Exception {
 					updateProgress(1, 9);
 					// 项目生成的路径
-					String projectPath = txtProjectPath.getText();
+//					String projectPath = txtProjectPath.getText();
+					String projectPath = "D:\\App\\A-project\\git-resource\\"+ DB_Application.getServeName()+"\\src\\main\\java\\";
 					String codeFormat = cboCodeFormat.getValue();
 					HistoryConfig historyConfig = getThisHistoryConfigAndInit(selectedDatabaseConfig, txtTableName.getText());
 					GeneratorContent content = getGeneratorContent(selectedDatabaseConfig);
@@ -1171,7 +1173,7 @@ public class IndexController extends BaseController {
 							if (templateName.equals(Constant.TEMPLATE_NAME_MAPPER)) {
 								templateName = selectedDatabaseConfig.getDbType() + Constant.TEMPLATE_NAME_MAPPER_SUFFIX;
 							}
-							String path = "D:\\App\\A-project\\git-resource\\oa-server\\src\\main\\resources\\mybatis";
+							String path = "D:\\App\\A-project\\git-resource\\"+ DB_Application.getServeName()+"\\src\\main\\resources\\mybatis";
 							CreateFileUtil.createFile(content, templateName, path, txtMapperPackage.getText(), txtMapperName.getText(), codeFormat,
 									config.isOverrideFile());
 						}
