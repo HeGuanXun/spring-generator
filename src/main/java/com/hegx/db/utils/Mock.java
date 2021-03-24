@@ -25,40 +25,40 @@ public class Mock {
     //年龄
     private static final String[] ages = new String[]{"21","25","24","28","31"};
     //金额
-    private static final Double[] moneys = new Double[]{10000.00,20000.00,30000.00,40000.00,50000.00};
+    private static final Double[] moneys = new Double[]{1000.00,2000.00,3000.00,4000.00,5000.00};
 
     //获取年龄
-    public static String getMockAge() {
+    public static String mockAge() {
         return ages[(int)(Math.random()*(ages.length-1))];
     }
     //获取当前时间
-    public static String getMockCurrentTime() {
+    public static String mockCurrentTime() {
         SimpleDateFormat tempDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return tempDate.format(new java.util.Date());
     }
     //获取性别
-    public static String getMockSex() {
+    public static String mockSex() {
         return sex[(int)(Math.random()*(sex.length-1))];
     }
     //获取一个随机8位的随机数
-    public static String getMockNumber() {
+    public static String mockNumber() {
         Random random = new Random();
         return String.valueOf(random.nextLong()).substring(1, 8 + 1);
     }
     //获取人名
-    public static String getMockUserName() {
+    public static String mockUserName() {
         return userNames[(int)(Math.random()*(userNames.length-1))];
     }
     //获取身份证号码
-    public static String getMockIdCard() {
+    public static String mockIdCard() {
         return idCards[(int)(Math.random()*(idCards.length-1))];
     }
     //获取手机号码
-    public static String getMockPhone() {
+    public static String mockPhone() {
         return phones[(int)(Math.random()*(phones.length-1))];
     }
     //获取地址
-    public static String getMockAddress() {
+    public static String mockAddress() {
         return address[(int)(Math.random()*(address.length-1))];
     }
     //获取部门
@@ -66,16 +66,16 @@ public class Mock {
         return departments[(int)(Math.random()*(departments.length-1))];
     }
     //获取金钱
-    public static BigDecimal getMockMoney() {
+    public static BigDecimal mockMoney() {
         Double money = moneys[(int) (Math.random() * (moneys.length - 1))];
         return new BigDecimal(money);
     }
     //获取审核状态
-    public static String getMockCheckStatus() {
+    public static String mockCheckStatus() {
         return checkStatus[(int)(Math.random()*(checkStatus.length-1))];
     }
     //获取审核状态
-    public static String getMockType(Class<?> t,String column)  {
+    public static String mockType(Class<?> t,String column)  {
         String status= "";
         Field[] fields = t.getDeclaredFields();
         for (Field field : fields) {

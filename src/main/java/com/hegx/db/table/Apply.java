@@ -40,12 +40,4 @@ public class Apply extends Mock{
     public Apply() {
     }
 
-    public ArrayList<Apply> buildDatas(){
-        ArrayList<Apply> list = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            list.add(new Apply(getMockCurrentTime(),getMockUserName(),getMockSex(),getMockAge(),
-                    getMockIdCard(),getMockPhone(),getMockType(Apply.class,"status")));
-        }
-        return list;
-    }
 }

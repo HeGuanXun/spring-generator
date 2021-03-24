@@ -12,7 +12,7 @@
 	</resultMap>
 
 	<sql id="${content.entity.tableName}_Column">
-		<#list content.entity.attrs as item>${item.columnName}<#if item?has_next>,</#if></#list>
+		<#list content.entity.attrs as item>`${item.columnName}`<#if item?has_next>,</#if></#list>
 	</sql>
 
 	<!--获得类名为:${content.entity.className}对应的数据库表的数据总行数 -->
@@ -34,6 +34,7 @@
 			from ${content.entity.tableName}
 		<if test="require!=null"><include refid="${content.mapper.item.assist.value}" /></if>
 		<if test="order !=null">${r'${order}'}</if>
+		     order by id desc
 			) result
 		<choose>
 			<when test="startRow!=null">where page &gt; ${r'#{startRow}'} <if test="rowSize!=null">and page &lt;= <if test="startRow!=null">${r'#{startRow}'}+</if>${r'#{rowSize}'} </if></when>
@@ -133,7 +134,7 @@
 	<sql id="${content.mapper.item.assist.value}">
 		<where>
 			<foreach collection="require" item="req" separator=" ">
-				${r'${req.require}'}
+				${r'${req.require}'} =
 				<if test="req.value != null">
 					${r'#{req.value}'}
 				</if>
@@ -166,7 +167,7 @@
 	<sql id="${content.mapper.item.updateAssist.value}">
 		<where>
 			<foreach collection="assist.require" item="req" separator=" ">
-				${r'${req.require}'}
+				${r'${req.require}'} =
 				<if test="req.value != null">
 					${r'#{req.value}'}
 				</if>

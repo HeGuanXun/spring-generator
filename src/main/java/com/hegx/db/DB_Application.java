@@ -3,7 +3,8 @@ package com.hegx.db;
 import com.hegx.annotation.Column;
 import com.hegx.annotation.Serve;
 import com.hegx.annotation.Table;
-import com.hegx.db.table.*;
+import com.hegx.db.factroy.Factory;
+import com.hegx.db.factroy.HgxFactory;
 import com.hegx.db.utils.DBUtils;
 import lombok.Data;
 
@@ -16,18 +17,24 @@ import java.util.ArrayList;
 @Serve(value = "expressage-serve")
 public class DB_Application {
 
+
     public static void main(String[] args) throws Exception {
-        //1.创建对象
-        Apply commonObject = new Apply();
+
+        String table = "com.hegx.db.table.MySjSystem";
+        //1.获取对象，通过工厂模式
+        Factory factory = HgxFactory.getInstance(table);
         //2.构造数据
-        ArrayList<Apply> datas = commonObject.buildDatas();
+        ArrayList<Factory> datas = factory.buildDatas();
         //3.构建字段
-        initColumns(commonObject);
+        initColumns(factory);
         //4.创建表名
         createTableContext();
         //5.插入数据
         addData(datas);
+        //6.构建Vue数据结构
+        buildVueColumns(factory);
     }
+
 
     //字段容器
     private static final ArrayList<DbColumn> columns = new ArrayList<>(10);
@@ -42,22 +49,21 @@ public class DB_Application {
 
     private static <T> void addData(ArrayList<T> datas) throws Exception {
         System.out.println();
-        for (int i = 0; i < datas.size(); i++) {
+        for (T data : datas) {
             insertContext = "insert into " + tableName + "(";
             columns.forEach(column -> {
-                if (!column.getColumnType().equals("java.util.Date")){
+                if (!column.getColumnType().equals("java.util.Date")) {
                     String columnName = "`" + column.getColumnName() + "`,";
                     insertContext += columnName;
                 }
             });
             insertContext = insertContext.substring(0, insertContext.length() - 1) + ")values(";
-            T t = datas.get(i);
-            Field[] fields = t.getClass().getDeclaredFields();
+            Field[] fields = data.getClass().getDeclaredFields();
             for (Field field : fields) {
                 field.setAccessible(true);
                 String name = field.getType().getName();
-                if (!"java.util.Date".equals(name)){
-                    insertContext += "'" + field.get(t) + "',";
+                if (!"java.util.Date".equals(name)) {
+                    insertContext += "'" + field.get(data) + "',";
                 }
             }
             insertContext = insertContext.substring(0, insertContext.length() - 1) + ");";
@@ -100,7 +106,7 @@ public class DB_Application {
                     columnType = "int(11) DEFAULT NULL";
                     break;
                 case "java.math.BigDecimal":
-                columnType = "decimal(10,0) DEFAULT NULL";
+                    columnType = "decimal(10,0) DEFAULT NULL";
                     break;
                 case "java.util.Date":
                     columnType = "datetime DEFAULT CURRENT_TIMESTAMP";
@@ -134,9 +140,70 @@ public class DB_Application {
         }
     }
 
-    public static String getServeName(){
+    public static String getServeName() {
         Serve serve = DB_Application.class.getAnnotation(Serve.class);
         return serve.value();
     }
 
+    /**
+     * 侯建vue columnConfig跟searchConfig
+     *
+     * @param t
+     * @param <T>
+     */
+    private static <T> void buildVueColumns(T t) {
+        Field[] fields = t.getClass().getDeclaredFields();
+        //1.构建table字段配置
+        StringBuilder columnConfig_buff = new StringBuilder();
+        columnConfig_buff.append("this.columnConfig = [\n");
+        for (int i = 0; i < fields.length; i++) {
+            fields[i].setAccessible(true);
+            buildColumnConfig(fields[i], columnConfig_buff, i, fields.length);
+        }
+
+        //2.构建查询字段配置
+        StringBuilder searchConfig_buff = new StringBuilder();
+        searchConfig_buff.append("this.searchConfig = [\n");
+        for (Field field : fields) {
+            field.setAccessible(true);
+            boolean isSearch = field.getAnnotation(Column.class).isSearch();
+            if (isSearch) {
+                String zh_name = field.getAnnotation(Column.class).value();
+                searchConfig_buff.append("{ prop: '")
+                        .append(field.getName())
+                        .append("',label: '")
+                        .append(zh_name).append("' }");
+                searchConfig_buff.append(",\n");
+            }
+        }
+        searchConfig_buff.append("];");
+        System.out.println("\n");
+        //页面名字
+        Table tableNames = t.getClass().getAnnotation(Table.class);
+        System.out.println("this.pageName = " +tableNames.value());
+        System.out.println(searchConfig_buff.toString());
+        System.out.println(columnConfig_buff.toString());
+
+    }
+
+    /**
+     * .构建table字段配置
+     *
+     * @param field
+     * @param config_buff
+     * @param index
+     * @param length
+     */
+    private static void buildColumnConfig(Field field, StringBuilder config_buff, int index, int length) {
+        String zh_name = field.getAnnotation(Column.class).value();
+        config_buff.append("{ prop: '")
+                .append(field.getName())
+                .append("',label: '")
+                .append(zh_name).append("' }");
+        if (index != length - 1) {
+            config_buff.append(",\n");
+        } else {
+            config_buff.append("\n];");
+        }
+    }
 }
