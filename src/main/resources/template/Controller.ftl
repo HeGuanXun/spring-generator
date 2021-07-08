@@ -4,10 +4,12 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 import ${content.service.classPackage}.${content.service.className};
 import ${content.entity.classPackage}.${content.entity.className};
-import com.hgx.common.utils.HttpJsonResult;
-import java.util.List;
+import ${content.basePackage}.utils.HttpJsonResult;
+import ${content.basePackage}.utils.Page;
+import javax.validation.Valid;
 
 /**
  * 何冠勋
@@ -19,7 +21,13 @@ public class ${content.controller.className}{
 
 	@Autowired
 	private ${content.service.className} ${content.service.className?uncap_first};
-	
+
+	@ApiOperation("分页查询")
+	@GetMapping(value = "/getPageList")
+	public HttpJsonResult<Page<${content.entity.className}>> getPageList(${content.entity.className} ${content.entity.className?uncap_first}) {
+		return HttpJsonResult.ok(${content.service.className?uncap_first}.getPageList(${content.entity.className?uncap_first}));
+	}
+
 	@ApiOperation("获取全部信息")
 	@GetMapping(value = "/list")
 	public HttpJsonResult<List<${content.entity.className}>> getList(${content.entity.className} ${content.entity.className?uncap_first}){
@@ -35,34 +43,20 @@ public class ${content.controller.className}{
 
 	@ApiOperation("新增或者修改")
 	@PostMapping(value = "/saveOrUpdate")
-	public HttpJsonResult<String> saveOrUpdate(${content.entity.className} ${content.entity.className?uncap_first}){
+	public HttpJsonResult<String> saveOrUpdate(@Valid ${content.entity.className} ${content.entity.className?uncap_first}){
 		if(${content.entity.className?uncap_first}.getId()!=null){
-			try {
-				${content.service.className?uncap_first}.${content.service.item.updateNotNull.value!}(${content.entity.className?uncap_first});
-				return HttpJsonResult.ok("更新成功！");
-				} catch (Exception e) {
-				return HttpJsonResult.errorException("更新失败！"+e);
-			}
+			${content.service.className?uncap_first}.${content.service.item.updateNotNull.value!}(${content.entity.className?uncap_first});
+			return HttpJsonResult.ok();
 		}
-		try {
-			${content.service.className?uncap_first}.${content.service.item.insertNotNull.value!}(${content.entity.className?uncap_first});
-		} catch (Exception e) {
-			e.printStackTrace();
-			return HttpJsonResult.errorException("新增失败！"+e);
-		}
-		return HttpJsonResult.ok("新增成功！");
+		${content.service.className?uncap_first}.${content.service.item.insertNotNull.value!}(${content.entity.className?uncap_first});
+		return HttpJsonResult.ok();
 	}
 
 	@ApiOperation("删除")
 	@GetMapping(value = "/deleteById")
 	public HttpJsonResult<String> deleteById(Integer id){
-		try {
-			${content.service.className?uncap_first}.${content.service.item.deleteById.value!}(id);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return HttpJsonResult.errorException("删除失败！"+e);
-		}
-		return HttpJsonResult.ok("删除成功！");
+		${content.service.className?uncap_first}.${content.service.item.deleteById.value!}(id);
+		return HttpJsonResult.ok();
 	}
 	</#if>
 }

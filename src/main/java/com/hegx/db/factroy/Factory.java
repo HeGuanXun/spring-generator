@@ -1,6 +1,5 @@
 package com.hegx.db.factroy;
 
-import com.hegx.db.table.MySjSystem;
 
 import java.util.ArrayList;
 

@@ -147,7 +147,7 @@
                                                                 </TextField>
                                                                 <TextField fx:id="txtProjectPath" prefHeight="34.0"
                                                                            prefWidth="394.0"
-                                                                           text="D:\App\A-project\git-resource\oa-server\src\main\java"
+                                                                           text=""
                                                                            promptText="请输入或选择存放目录,例如:E:/temp-vertx"
                                                                            GridPane.columnIndex="1"
                                                                            GridPane.columnSpan="2">
@@ -225,14 +225,14 @@
                                                                         <Insets right="3.0"/>
                                                                     </GridPane.margin>
                                                                 </Label>
-                                                                <TextField fx:id="txtEntityPackage" text="com.hgx.common.entity"
+                                                                <TextField fx:id="txtEntityPackage" text="com.haiyu.platform.entity"
                                                                            GridPane.columnIndex="1"
                                                                            GridPane.rowIndex="2">
                                                                     <font>
                                                                         <Font size="16.0"/>
                                                                     </font>
                                                                 </TextField>
-                                                                <TextField fx:id="txtServicePackage" text="com.hgx.common.service"
+                                                                <TextField fx:id="txtServicePackage" text="com.haiyu.platform.service"
                                                                            GridPane.columnIndex="1"
                                                                            GridPane.rowIndex="3">
                                                                     <font>
@@ -240,7 +240,7 @@
                                                                     </font>
                                                                 </TextField>
                                                                 <TextField fx:id="txtServiceImplPackage"
-                                                                           text="com.hgx.common.service.impl"
+                                                                           text="com.haiyu.platform.service.impl"
                                                                            GridPane.columnIndex="1"
                                                                            GridPane.rowIndex="4">
                                                                     <font>
@@ -248,21 +248,21 @@
                                                                     </font>
                                                                 </TextField>
                                                                 <TextField fx:id="txtRouterPackage"
-                                                                           text="com.hgx.common.controller"
+                                                                           text="com.haiyu.platform.controller"
                                                                            GridPane.columnIndex="1"
                                                                            GridPane.rowIndex="7">
                                                                     <font>
                                                                         <Font size="16.0"/>
                                                                     </font>
                                                                 </TextField>
-                                                                <TextField fx:id="txtSqlPackage" text="com.hgx.common.dao"
+                                                                <TextField fx:id="txtSqlPackage" text="com.haiyu.platform.dao"
                                                                            GridPane.columnIndex="1"
                                                                            GridPane.rowIndex="5">
                                                                     <font>
                                                                         <Font size="16.0"/>
                                                                     </font>
                                                                 </TextField>
-                                                                <TextField fx:id="txtAssistPackage" text="com.hgx.common.utils"
+                                                                <TextField fx:id="txtAssistPackage" text=""
                                                                            GridPane.columnIndex="1"
                                                                            GridPane.rowIndex="9">
                                                                     <font>
@@ -577,7 +577,7 @@
                                                                         <Font size="20.0"/>
                                                                     </font>
                                                                 </Label>
-                                                                <TextField fx:id="txtUnitTestPackage" text="com.hgx.common.test"
+                                                                <TextField fx:id="txtUnitTestPackage" text=""
                                                                            GridPane.columnIndex="1"
                                                                            GridPane.rowIndex="8">
                                                                     <font>

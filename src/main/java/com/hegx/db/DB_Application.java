@@ -1,6 +1,7 @@
 package com.hegx.db;
 
 import com.hegx.annotation.Column;
+import com.hegx.enums.ItemEnum;
 import com.hegx.annotation.Serve;
 import com.hegx.annotation.Table;
 import com.hegx.db.factroy.Factory;
@@ -14,13 +15,10 @@ import java.util.ArrayList;
 /**
  * 创表程序
  */
-@Serve(value = "expressage-serve")
+@Serve(applicationName = "platform",projectPath = "D:\\App\\A-project\\git-resource\\haiyu-service\\haiyu-platform")
 public class DB_Application {
-
-
     public static void main(String[] args) throws Exception {
-
-        String table = "com.hegx.db.table.MySjSystem";
+        String table = "com.hegx.db.table.Px";
         //1.获取对象，通过工厂模式
         Factory factory = HgxFactory.getInstance(table);
         //2.构造数据
@@ -142,7 +140,12 @@ public class DB_Application {
 
     public static String getServeName() {
         Serve serve = DB_Application.class.getAnnotation(Serve.class);
-        return serve.value();
+        return serve.applicationName();
+    }
+
+    public static String getProjectPath() {
+        Serve serve = DB_Application.class.getAnnotation(Serve.class);
+        return serve.projectPath();
     }
 
     /**
@@ -155,34 +158,16 @@ public class DB_Application {
         Field[] fields = t.getClass().getDeclaredFields();
         //1.构建table字段配置
         StringBuilder columnConfig_buff = new StringBuilder();
-        columnConfig_buff.append("this.columnConfig = [\n");
+        columnConfig_buff.append("columnConfig : [\n");
         for (int i = 0; i < fields.length; i++) {
             fields[i].setAccessible(true);
             buildColumnConfig(fields[i], columnConfig_buff, i, fields.length);
         }
-
-        //2.构建查询字段配置
-        StringBuilder searchConfig_buff = new StringBuilder();
-        searchConfig_buff.append("this.searchConfig = [\n");
-        for (Field field : fields) {
-            field.setAccessible(true);
-            boolean isSearch = field.getAnnotation(Column.class).isSearch();
-            if (isSearch) {
-                String zh_name = field.getAnnotation(Column.class).value();
-                searchConfig_buff.append("{ prop: '")
-                        .append(field.getName())
-                        .append("',label: '")
-                        .append(zh_name).append("' }");
-                searchConfig_buff.append(",\n");
-            }
-        }
-        searchConfig_buff.append("];");
-        System.out.println("\n");
         //页面名字
         Table tableNames = t.getClass().getAnnotation(Table.class);
-        System.out.println("this.pageName = " +tableNames.value());
-        System.out.println(searchConfig_buff.toString());
-        System.out.println(columnConfig_buff.toString());
+        System.out.print("'" + tableNames.value() + "':{\n\t");
+        System.out.print(columnConfig_buff.toString());
+        System.out.print("},");
 
     }
 
@@ -196,14 +181,28 @@ public class DB_Application {
      */
     private static void buildColumnConfig(Field field, StringBuilder config_buff, int index, int length) {
         String zh_name = field.getAnnotation(Column.class).value();
-        config_buff.append("{ prop: '")
-                .append(field.getName())
-                .append("',label: '")
-                .append(zh_name).append("' }");
+        boolean isSearch = field.getAnnotation(Column.class).isSearch();
+        String[] options = field.getAnnotation(Column.class).options();
+        ItemEnum itemType = field.getAnnotation(Column.class).itemType();
+        config_buff.append("\t\t{ prop: '").append(field.getName()).append("',label: '").append(zh_name).append("'");
+        if (isSearch) {
+            config_buff.append(",isSearch: '").append(true).append("'");
+        }
+        if (options.length > 0) {
+            config_buff.append(",type: '").append("Select'");
+            config_buff.append(",options: [\n\t");
+            for (int i = 0; i < options.length; i++) {
+                config_buff.append("\t\t{label: '").append(options[i]).append("',value: '").append(options[i]).append("'},\n\t");
+            }
+            config_buff.append("\t]");
+        }else if (!itemType.equals("Input")){
+            config_buff.append(",type: '").append(itemType).append("'");
+        }
+        config_buff.append("}");
         if (index != length - 1) {
             config_buff.append(",\n");
         } else {
-            config_buff.append("\n];");
+            config_buff.append("\n]");
         }
     }
 }

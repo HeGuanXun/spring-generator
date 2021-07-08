@@ -1,8 +1,7 @@
 package ${content.dao.classPackage};
 import java.util.List;
-import ${content.assist.classPackage}.${content.assist.className};
+import ${content.basePackage}.utils.${content.assist.className};
 import ${content.entity.classPackage}.${content.entity.className};
-import org.apache.ibatis.annotations.Param;
 /**
  * ${content.entity.className}的Dao接口
  * @author

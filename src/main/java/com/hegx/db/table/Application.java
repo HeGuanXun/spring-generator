@@ -1,55 +1,56 @@
 package com.hegx.db.table;
 
 import com.hegx.annotation.Column;
+import com.hegx.enums.ItemEnum;
 import com.hegx.annotation.Table;
+import com.hegx.db.factroy.Factory;
 import com.hegx.db.utils.Mock;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 
 @Data
-@Table(value = "application", tableContext = "报销")
-public class Application{
+@Table(value = "jb", tableContext = "加班申请")
+public class Application extends Mock implements Factory {
 
-    @Column("编号")
-    private String num;
-    @Column("名称")
-    private String name;
-    @Column("部门")
-    private String department;
-    @Column(value = "类型",types = {"客户支出","销售支出"})
+    @Column(value = "加班类型",
+            isSearch = true,
+            itemType = ItemEnum.Select ,
+            options = {"工作日加班","周末加班","节假日加班"}
+            )
     private String type;
-    @Column("日期")
-    private Date date;
-    @Column("相关人员 || 申请人")
-    private String relatedMan;
-    @Column("金额")
-    private BigDecimal money;
-    @Column("描述 || 相关内容")
-    private String described;
-    @Column("备注")
-    private String remark;
-    @Column("状态")
-    private String status;
-    @Column("申请时间")
-    private Date applyDate;
+    @Column(value = "开始时间")
+    private Date startTime;
+    @Column(value = "结束时间")
+    private Date endTime;
+    @Column(value = "合计时间")
+    private String totalDay;
+    @Column(value = "加班内容")
+    private String context;
 
-    public Application(String num, String name, String department, String type, String relatedMan, BigDecimal money, String described, String remark, String status) {
-        this.num = num;
-        this.name = name;
-        this.department = department;
+    public Application(String type, Date startTime, Date endTime, String totalDay, String context) {
         this.type = type;
-        this.relatedMan = relatedMan;
-        this.money = money;
-        this.described = described;
-        this.remark = remark;
-        this.status = status;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.totalDay = totalDay;
+        this.context = context;
     }
+
+    @Override
+    public ArrayList<Application> buildDatas() {
+        ArrayList<Application> list = new ArrayList<>();
+        list.add(new Application("工作日加班",new Date(),new Date(),"3","赶进度"));
+        list.add(new Application("周末加班",new Date(),new Date(),"3","赶进度"));
+        list.add(new Application("节假日加班",new Date(),new Date(),"3","赶进度"));
+        list.add(new Application("工作日加班",new Date(),new Date(),"3","赶进度"));
+        list.add(new Application("工作日加班",new Date(),new Date(),"3","赶进度"));
+        return list;
+    }
+
+
 
     public Application() {
     }
-
 
 }

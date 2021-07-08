@@ -1,12 +1,18 @@
 package ${content.service.classPackage};
 import java.util.List;
 import ${content.entity.classPackage}.${content.entity.className};
+import ${content.basePackage}.utils.Page;
 
 /**
  * ${content.entity.className}的服务接口
  * @author
  */
 public interface ${content.service.className}{
+
+	/**
+	* 分页获取数据
+	*/
+	Page<${content.entity.className}> getPageList(${content.entity.className} ${content.entity.className?uncap_first});
 	/**
 	 * 获得所以数据集
 	 */

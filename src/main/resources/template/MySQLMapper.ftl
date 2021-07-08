@@ -16,15 +16,18 @@
 	</sql>
 
 	<!--获得类名为:${content.entity.className}对应的数据库表的数据总行数 -->
-	<select id="${content.dao.item.count.value}" parameterType="${content.assist.classPackage}.Assist" resultType="java.lang.Long">
+	<select id="${content.dao.item.count.value}" parameterType="${content.basePackage}.utils.Assist" resultType="java.lang.Long">
 		select count(*) from ${content.entity.tableName}
 		<if test="require!=null">
 			<include refid="${content.mapper.item.assist.value}" />
 		</if>
+		<if test="currentPage!=null and pageSize!=null">
+			limit ${content.page.mapperCurrentPage},${content.page.pageSize}
+		</if>
 	</select>
 
 	<!-- 获得类名为:${content.entity.className}对应数据库中表的数据集合 -->
-	<select id="${content.dao.item.select.value}" parameterType="${content.assist.classPackage}.Assist" resultMap="${content.mapper.item.resultMap.value}">
+	<select id="${content.dao.item.select.value}" parameterType="${content.basePackage}.utils.Assist" resultMap="${content.mapper.item.resultMap.value}">
 		select * from (
 			select
 		<choose>
@@ -36,10 +39,9 @@
 		<if test="order !=null">${r'${order}'}</if>
 		     order by id desc
 			) result
-		<choose>
-			<when test="startRow!=null">where page &gt; ${r'#{startRow}'} <if test="rowSize!=null">and page &lt;= <if test="startRow!=null">${r'#{startRow}'}+</if>${r'#{rowSize}'} </if></when>
-			<otherwise><if test="rowSize!=null">where page &lt;= ${r'#{rowSize}'}</if></otherwise>
-		</choose>
+		<if test="currentPage!=null and pageSize!=null">
+			limit ${content.page.mapperCurrentPage},${content.page.pageSize}
+		</if>
 	</select>
 	<#if content.entity.primaryKeyAttr??>
 		<!-- 通过${content.entity.className}的id获得对应数据库中表的数据对象 -->

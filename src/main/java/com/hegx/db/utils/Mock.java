@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Random;
 
 public class Mock {
-    //用户名
+
     private static final String[] userNames = new String[]{"花木兰","李白","妲己","孙悟空","马可波罗","鲁班","百里守约","甄姬","明世隐","亚瑟"};
     //手机号码
     private static final String[] phones = new String[]{"17666112400","18866611240","1868876578","18977665466","15999663200"};
@@ -43,7 +43,12 @@ public class Mock {
     //获取一个随机8位的随机数
     public static String mockNumber() {
         Random random = new Random();
-        return String.valueOf(random.nextLong()).substring(1, 8 + 1);
+        return String.valueOf(random.nextLong()).substring(1, 15 + 1);
+    }
+    //获取一个随机8位的随机数
+    public static String mockNumber(String type) {
+        Random random = new Random();
+        return String.valueOf(type+"-"+random.nextLong()).substring(1, 15 + 1);
     }
     //获取人名
     public static String mockUserName() {
@@ -62,7 +67,7 @@ public class Mock {
         return address[(int)(Math.random()*(address.length-1))];
     }
     //获取部门
-    public static String getDepartment() {
+    public static String getDepartments() {
         return departments[(int)(Math.random()*(departments.length-1))];
     }
     //获取金钱
@@ -81,7 +86,7 @@ public class Mock {
         for (Field field : fields) {
             if (field.getName().equals(column)) {
                 Column annotation = field.getAnnotation(Column.class);
-                String[] types = annotation.types();
+                String[] types = annotation.options();
                 status = types[(int) (Math.random() * (types.length - 1))];
             }
         }

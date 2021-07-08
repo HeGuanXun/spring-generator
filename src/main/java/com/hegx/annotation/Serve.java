@@ -8,5 +8,22 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Serve {
-    String value() default "";
+    /**
+     * 应用名字
+     * @return
+     */
+    String applicationName() default "";
+
+    /**
+     * 项目路径
+     * @return
+     */
+    String projectPath() default "";
+
+    /**
+     * 包名
+     * @return
+     */
+    String basePackage() default "";
+
 }

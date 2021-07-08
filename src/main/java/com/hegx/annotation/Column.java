@@ -1,5 +1,7 @@
 package com.hegx.annotation;
 
+import com.hegx.enums.ItemEnum;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -15,6 +17,9 @@ public @interface Column {
     //是否是查询条件
     boolean isSearch() default false;
 
+    //表单项类型
+    ItemEnum itemType() default ItemEnum.Input;
+
     //类型
-    String[] types() default {};
+    String[] options() default {};
 }

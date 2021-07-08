@@ -14,9 +14,11 @@ public class Assist {
 	/** 自定义排序 */
 	private String order;
 	/** 数据分页开始行 */
-	private Integer startRow;
+	private Integer currentPage;
 	/** 每次取多少行数据 */
 	private Integer rowSize;
+	/*mybatis计算用的 属性*/
+	private Integer mapperCurrentPage;
 	/** 设置自定义返回列 */
 	private String resultColumn;
 	/** 条件集 */
@@ -694,8 +696,8 @@ public class Assist {
 	 * 
 	 * @return
 	 */
-	public Integer getStartRow() {
-		return startRow;
+	public Integer getCurrentPage() {
+		return currentPage;
 	}
 
 	/**
@@ -703,8 +705,8 @@ public class Assist {
 	 * 
 	 * @param startRow
 	 */
-	public Assist setStartRow(Integer startRow) {
-		this.startRow = startRow;
+	public Assist setCurrentPage(Integer currentPage) {
+		this.currentPage = currentPage;
 		return this;
 	}
 
@@ -713,17 +715,17 @@ public class Assist {
 	 * 
 	 * @return
 	 */
-	public Integer getRowSize() {
-		return rowSize;
+	public Integer getPageSize() {
+		return pageSize;
 	}
 
 	/**
 	 * 设置每次取多少很数据
 	 * 
-	 * @param rowSize
+	 * @param pageSize
 	 */
-	public Assist setRowSize(Integer rowSize) {
-		this.rowSize = rowSize;
+	public Assist setRowSize(Integer pageSize) {
+		this.pageSize = pageSize;
 		return this;
 	}
 
@@ -779,6 +781,15 @@ public class Assist {
 		super();
 	}
 
+	public Assist(Integer currentPage, Integer pageSize) {
+		if (currentPage<0){
+			currentPage = 0;
+		}
+		this.currentPage = currentPage;
+		this.pageSize = pageSize;
+		this.mapperCurrentPage = (currentPage-1) * pageSize;
+	}
+
 	/**
 	 * 初始化,该构造方法用于使用Assist的静态条件方法,动态添加条件
 	 * 
@@ -793,6 +804,14 @@ public class Assist {
 		for (int i = 0; i < require.length; i++) {
 			this.require.add(require[i]);
 		}
+	}
+
+	public Integer getMapperCurrentPage() {
+		return mapperCurrentPage;
+	}
+
+	public void setMapperCurrentPage(Integer mapperCurrentPage) {
+		this.mapperCurrentPage = mapperCurrentPage;
 	}
 
 	@Override

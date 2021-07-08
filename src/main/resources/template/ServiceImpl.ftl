@@ -6,8 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ${content.service.classPackage}.${content.service.className};
 import ${content.dao.classPackage}.${content.dao.className};
-import ${content.assist.classPackage}.${content.assist.className};
+import ${content.basePackage}.utils.${content.assist.className};
 import ${content.entity.classPackage}.${content.entity.className};
+import ${content.basePackage}.utils.Page;
 /**
  * ${content.entity.className}的服务接口的实现类
  * @author
@@ -21,13 +22,21 @@ public class ${content.serviceImpl.className} implements ${content.service.class
 	private ${content.dao.className} ${content.dao.className?uncap_first};
 
 	@Override
+	public Page<${content.entity.className}> getPageList(${content.entity.className} ${content.entity.className?uncap_first}){
+		Assist assist = new Assist(${content.entity.className?uncap_first}.getCurrentPage(),${content.entity.className?uncap_first}.getPageSize());
+		buildParameter(${content.entity.className?uncap_first},assist);
+		Page<${content.entity.className}> page = new Page<>();
+		page.setCurrentPage(${content.entity.className?uncap_first}.getCurrentPage());
+		page.setPageSize(${content.entity.className?uncap_first}.getPageSize());
+		page.setItems(${content.dao.className?uncap_first}.${content.dao.item.select.value!}(assist));
+		page.setTotal(${content.dao.className?uncap_first}.${content.dao.item.count.value!}(assist));
+		return page;
+	}
+
+	@Override
 	public List<${content.entity.className}> getList(${content.entity.className} ${content.entity.className?uncap_first}){
 		Assist assist = new Assist();
-	    <#list content.entity.attrs as item>
-		if (${content.entity.className?uncap_first}.get${item.field?cap_first}()!=null){
-			assist.setRequires(Assist.whereRequire("${item.field}",${content.entity.className?uncap_first}.get${item.field?cap_first}()));
-		 }
-		</#list>
+		buildParameter(${content.entity.className?uncap_first},assist);
 		return ${content.dao.className?uncap_first}.${content.dao.item.select.value!}(assist);
 	}
 	<#if content.entity.primaryKeyAttr??>
@@ -70,6 +79,12 @@ public class ${content.serviceImpl.className} implements ${content.service.class
 		return ${content.assist.className}.resultFormat(${content.assist.className}.C200, result);
 	}
 	</#if>
-
+	void buildParameter(${content.entity.className} ${content.entity.className?uncap_first},Assist assist){
+	<#list content.entity.attrs as item>
+	if (${content.entity.className?uncap_first}.get${item.field?cap_first}() != null){
+		assist.setRequires(Assist.whereRequire("${item.field}",${content.entity.className?uncap_first}.get${item.field?cap_first}()));
+	}
+	</#list>
+}
 
 }

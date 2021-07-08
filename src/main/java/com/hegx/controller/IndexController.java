@@ -10,13 +10,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-
 import com.hegx.SpringGeneratorApplication;
-import com.hegx.db.DB_Application;
+import com.hegx.entity.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.log4j.Logger;
-
 import com.hegx.common.ConfigUtil;
 import com.hegx.common.Constant;
 import com.hegx.common.ConverterUtil;
@@ -24,19 +22,6 @@ import com.hegx.common.CreateFileUtil;
 import com.hegx.common.DBUtil;
 import com.hegx.common.LanguageKey;
 import com.hegx.common.StrUtil;
-import com.hegx.entity.ControllerContent;
-import com.hegx.entity.CustomContent;
-import com.hegx.entity.CustomPropertyContent;
-import com.hegx.entity.DaoContent;
-import com.hegx.entity.DatabaseContent;
-import com.hegx.entity.EntityContent;
-import com.hegx.entity.GeneratorContent;
-import com.hegx.entity.MapperContent;
-import com.hegx.entity.ServiceContent;
-import com.hegx.entity.ServiceImplContent;
-import com.hegx.entity.SqlAssistContent;
-import com.hegx.entity.TableContent;
-import com.hegx.entity.UnitTestContent;
 import com.hegx.models.TableAttributeEntity;
 import com.hegx.models.TableAttributeKeyValueTemplate;
 import com.hegx.options.ControllerConfig;
@@ -52,7 +37,6 @@ import com.hegx.options.ServiceImplConfig;
 import com.hegx.options.SqlAssistConfig;
 import com.hegx.options.UnitTestConfig;
 import com.hegx.view.AlertUtil;
-
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -82,6 +66,7 @@ import javafx.util.Callback;
 @Setter
 @Getter
 public class IndexController extends BaseController {
+
 	private final Logger LOG = Logger.getLogger(this.getClass());
 	/**
 	 * 表名
@@ -364,11 +349,29 @@ public class IndexController extends BaseController {
 			loadIndexConfigInfo("default");// 查询使用有默认的配置,如果有就加载
 			loadPlace();// 设置默认的占位符名字
 			loadTemplate();// 获取模板文件夹中所有模板的名字
+			initProject();
 			LOG.debug("加载配置信息到首页成功!");
 		} catch (Exception e) {
 			LOG.error("加载配置信息失败!!!", e);
 			AlertUtil.showErrorAlert("加载配置失败!失败原因:\r\n" + e.getMessage());
 		}
+	}
+
+	//初始化配置信息
+	private void initProject(){
+		String entityPackage = "com.haiyu."+SpringGeneratorApplication.getServeName()+".entity";
+		String controllerPackage = "com.haiyu."+SpringGeneratorApplication.getServeName()+".controller";
+		String servicePackage = "com.haiyu."+SpringGeneratorApplication.getServeName()+".service";
+		String serviceImplPackage = "com.haiyu."+SpringGeneratorApplication.getServeName()+".service.impl";
+		String daoPackage = "com.haiyu."+SpringGeneratorApplication.getServeName()+".dao";
+		//项目路径
+		txtProjectPath.setText(SpringGeneratorApplication.getProjectPath()+"\\java\\");
+		//包名设置
+		txtEntityPackage.setText(entityPackage);
+		txtServicePackage.setText(servicePackage);
+		txtServiceImplPackage.setText(serviceImplPackage);
+		txtRouterPackage.setText(controllerPackage);
+		txtSqlPackage.setText(daoPackage);
 	}
 
 	// ======================方法区域================================
@@ -761,7 +764,8 @@ public class IndexController extends BaseController {
 	public void loadTemplate() {
 		LOG.debug("执行加载模板文件夹里面所有模板的名字...");
 		try {
-			this.templateNameItems = Files.list(Paths.get(Constant.TEMPLATE_DIR_NAME)).filter(f -> f.getFileName().toString().endsWith(".ftl"))
+			this.templateNameItems = Files.list(Paths.get(Constant.TEMPLATE_DIR_NAME))
+					.filter(f -> f.getFileName().toString().endsWith(".ftl"))
 					.map(p -> p.getFileName().toString()).collect(Collectors.toList());
 			if (this.templateNameItems == null) {
 				this.templateNameItems = new ArrayList<>();
@@ -856,6 +860,10 @@ public class IndexController extends BaseController {
 		MapperContent mapperContent = new MapperContent(txtMapperPackage.getText(), mapperName);
 		ConverterUtil.mapperConfigToContent(mapperConfig, mapperContent, className);
 		content.setMapper(mapperContent);
+		//设置基础包名字
+		content.setBasePackage(SpringGeneratorApplication.getBasePackage());
+		//设置分页信息
+		content.setPage(new Page());
 		// 自定义包类属性
 		CustomConfig customConfig = history.getCustomConfig();
 		CustomContent customContent = new CustomContent();
@@ -1062,7 +1070,8 @@ public class IndexController extends BaseController {
 					updateProgress(1, 9);
 					// 项目生成的路径
 //					String projectPath = txtProjectPath.getText();
-					String projectPath = "D:\\App\\A-project\\git-resource\\"+ DB_Application.getServeName()+"\\src\\main\\java\\";
+					//Java路径
+					String javaProjectPath = SpringGeneratorApplication.getProjectPath()+"\\java\\";
 					String codeFormat = cboCodeFormat.getValue();
 					HistoryConfig historyConfig = getThisHistoryConfigAndInit(selectedDatabaseConfig, txtTableName.getText());
 					GeneratorContent content = getGeneratorContent(selectedDatabaseConfig);
@@ -1071,7 +1080,7 @@ public class IndexController extends BaseController {
 						EntityConfig config = historyConfig.getEntityConfig();
 						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
 							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtEntityName.getText() + ""));
-							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtEntityPackage.getText(),
+							CreateFileUtil.createFile(content, config.getTemplateName(), javaProjectPath, txtEntityPackage.getText(),
 									txtEntityName.getText() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 						}
 						LOG.debug("执行生成实体类-->成功!");
@@ -1085,7 +1094,7 @@ public class IndexController extends BaseController {
 						ServiceConfig config = historyConfig.getServiceConfig();
 						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
 							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtServiceName.getText() + ""));
-							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtServicePackage.getText(),
+							CreateFileUtil.createFile(content, config.getTemplateName(), javaProjectPath, txtServicePackage.getText(),
 									txtServiceName.getText() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 						}
 						LOG.debug("执行生成Service-->成功!");
@@ -1099,7 +1108,7 @@ public class IndexController extends BaseController {
 						ServiceImplConfig config = historyConfig.getServiceImplConfig();
 						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
 							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtServiceImplName.getText() + ""));
-							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtServiceImplPackage.getText(),
+							CreateFileUtil.createFile(content, config.getTemplateName(), javaProjectPath, txtServiceImplPackage.getText(),
 									txtServiceImplName.getText() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 						}
 						LOG.debug("执行生成ServiceImpl-->成功!");
@@ -1113,7 +1122,7 @@ public class IndexController extends BaseController {
 						DaoConfig config = historyConfig.getDaoConfig();
 						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
 							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtSqlName.getText() + ""));
-							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtSqlPackage.getText(),
+							CreateFileUtil.createFile(content, config.getTemplateName(), javaProjectPath, txtSqlPackage.getText(),
 									txtSqlName.getText() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 						}
 						LOG.debug("执行生成DAO-->成功!");
@@ -1121,13 +1130,13 @@ public class IndexController extends BaseController {
 						updateMessage("执行生成DAO:" + txtSqlName.getText() + "失败:" + e);
 						LOG.error("执行生成DAO-->失败:", e);
 					}
-					// 生成Router
+					// 生成Controller
 					updateProgress(5, 9);
 					try {
 						ControllerConfig config = historyConfig.getControllerConfig();
 						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
 							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtRouterName.getText() + ""));
-							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtRouterPackage.getText(),
+							CreateFileUtil.createFile(content, config.getTemplateName(), javaProjectPath, txtRouterPackage.getText(),
 									txtRouterName.getText() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
 						}
 						LOG.debug("执行生成Controller-->成功!");
@@ -1136,33 +1145,33 @@ public class IndexController extends BaseController {
 						LOG.error("执行生成Controller-->失败:", e);
 					}
 					// 生成单元测试
-					updateProgress(6, 9);
-					try {
-						UnitTestConfig config = historyConfig.getUnitTestConfig();
-//						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
-//							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtUnitTestName.getText() + ""));
-//							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtUnitTestPackage.getText(),
-//									txtUnitTestName.getText() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
-//						}
-						LOG.debug("执行生成单元测试-->成功!");
-					} catch (Exception e) {
-						updateMessage("执行生成单元测试:" + txtUnitTestName.getText() + "失败:" + e);
-						LOG.error("执行生成单元测试-->失败:", e);
-					}
+//					updateProgress(6, 9);
+//					try {
+//						UnitTestConfig config = historyConfig.getUnitTestConfig();
+////						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
+////							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtUnitTestName.getText() + ""));
+////							CreateFileUtil.createFile(content, config.getTemplateName(), javaProjectPath, txtUnitTestPackage.getText(),
+////									txtUnitTestName.getText() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
+////						}
+////						LOG.debug("执行生成单元测试-->成功!");
+//					} catch (Exception e) {
+//						updateMessage("执行生成单元测试:" + txtUnitTestName.getText() + "失败:" + e);
+//						LOG.error("执行生成单元测试-->失败:", e);
+//					}
 					// 生成SqlAssist
-					updateProgress(6, 9);
-					try {
-						SqlAssistConfig config = historyConfig.getAssistConfig();
-						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
-							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtAssistName.getText() + ""));
-							CreateFileUtil.createFile(content, config.getTemplateName(), projectPath, txtAssistPackage.getText(),
-									txtAssistName.getText() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
-						}
-						LOG.debug("执行生成SqlAssist-->成功!");
-					} catch (Exception e) {
-						updateMessage("执行生成SqlAssist:" + txtAssistName.getText() + "失败:" + e);
-						LOG.error("执行生成SqlAssist-->失败:", e);
-					}
+//					updateProgress(6, 9);
+//					try {
+//						SqlAssistConfig config = historyConfig.getAssistConfig();
+//						if (!StrUtil.isNullOrEmpty(config.getTemplateName())) {
+//							updateMessage(runCreateTipsText + " {t} ...".replace("{t}", txtAssistName.getText() + ""));
+//							CreateFileUtil.createFile(content, config.getTemplateName(), javaProjectPath, txtAssistPackage.getText(),
+//									txtAssistName.getText() + Constant.JAVA_SUFFIX, codeFormat, config.isOverrideFile());
+//						}
+//						LOG.debug("执行生成SqlAssist-->成功!");
+//					} catch (Exception e) {
+//						updateMessage("执行生成SqlAssist:" + txtAssistName.getText() + "失败:" + e);
+//						LOG.error("执行生成SqlAssist-->失败:", e);
+//					}
 					// 生成Mapper
 					updateProgress(8, 9);
 					try {
@@ -1173,7 +1182,7 @@ public class IndexController extends BaseController {
 							if (templateName.equals(Constant.TEMPLATE_NAME_MAPPER)) {
 								templateName = selectedDatabaseConfig.getDbType() + Constant.TEMPLATE_NAME_MAPPER_SUFFIX;
 							}
-							String path = "D:\\App\\A-project\\git-resource\\"+ DB_Application.getServeName()+"\\src\\main\\resources\\mybatis";
+							String path = SpringGeneratorApplication.getProjectPath()+"\\resources\\mybatis";
 							CreateFileUtil.createFile(content, templateName, path, txtMapperPackage.getText(), txtMapperName.getText(), codeFormat,
 									config.isOverrideFile());
 						}
@@ -1189,10 +1198,10 @@ public class IndexController extends BaseController {
 							if (!StrUtil.isNullOrEmpty(custom.getTemplateValue())) {
 								try {
 									String loCase = StrUtil.firstToLoCase(txtEntityName.getText());
-									String cpackage = custom.getPackageName().replace("{C}", txtEntityName.getText()).replace("{c}", loCase);
+									String cPackage = custom.getPackageName().replace("{C}", txtEntityName.getText()).replace("{c}", loCase);
 									String name = custom.getClassName().replace("{C}", txtEntityName.getText()).replace("{c}", loCase);
 									updateMessage(runCreateTipsText + " {t} ...".replace("{t}", custom.getKey() + ""));
-									CreateFileUtil.createFile(content, custom.getTemplateValue(), projectPath, cpackage, name + custom.getSuffix(),
+									CreateFileUtil.createFile(content, custom.getTemplateValue(), javaProjectPath, cPackage, name + custom.getSuffix(),
 											codeFormat, config.isOverrideFile());
 								} catch (Exception e) {
 									updateMessage("执行生成自定义生成包类:" + custom.getKey() + "失败:" + e);
