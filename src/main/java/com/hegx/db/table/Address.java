@@ -9,7 +9,7 @@ import lombok.Data;
 import java.util.ArrayList;
 
 @Data
-@Table(value = "address", tableContext = "用户地址信息管理系统")
+@Table(value = "addressA", tableContext = "用户地址信息管理系统")
 public class Address extends Mock implements Factory {
 
     @Column(value = "社区名",isSearch = true)

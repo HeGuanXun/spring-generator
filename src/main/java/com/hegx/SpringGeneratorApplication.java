@@ -33,7 +33,7 @@ import javafx.stage.Stage;
 @Log
 @Serve(applicationName = "platform"
         , projectPath = "D:\\App\\A-project\\git-resource\\haiyu-service\\haiyu-platform\\src\\main"
-        , basePackage = "com.haiyu.platform"
+        , basePackage = "com.haiyu.common"
 )
 public class SpringGeneratorApplication extends Application {
     private static final Logger LOG = Logger.getLogger(SpringGeneratorApplication.class.getName());

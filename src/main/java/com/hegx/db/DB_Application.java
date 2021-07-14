@@ -18,7 +18,7 @@ import java.util.ArrayList;
 @Serve(applicationName = "platform",projectPath = "D:\\App\\A-project\\git-resource\\haiyu-service\\haiyu-platform")
 public class DB_Application {
     public static void main(String[] args) throws Exception {
-        String table = "com.hegx.db.table.Px";
+        String table = "com.hegx.db.table.Address";
         //1.获取对象，通过工厂模式
         Factory factory = HgxFactory.getInstance(table);
         //2.构造数据
